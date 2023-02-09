@@ -1,0 +1,996 @@
+[
+    {
+      "_index": "packets-2023-01-18",
+      "_type": "doc",
+      "_score": null,
+      "_source": {
+        "layers": {
+          "frame": {
+            "frame.encap_type": "1",
+            "frame.time": "Jan 18, 2023 10:14:01.119676000 Eastern Standard Time",
+            "frame.offset_shift": "0.000000000",
+            "frame.time_epoch": "1674054841.119676000",
+            "frame.time_delta": "0.000000000",
+            "frame.time_delta_displayed": "0.000000000",
+            "frame.time_relative": "0.000000000",
+            "frame.number": "1",
+            "frame.len": "1442",
+            "frame.cap_len": "1442",
+            "frame.marked": "0",
+            "frame.ignored": "0",
+            "frame.protocols": "eth:ethertype:ip:udp:cflow",
+            "frame.coloring_rule.name": "UDP",
+            "frame.coloring_rule.string": "udp"
+          },
+          "eth": {
+            "eth.dst": "00:50:56:80:d5:6c",
+            "eth.dst_tree": {
+              "eth.dst_resolved": "VMware_80:d5:6c",
+              "eth.dst.oui": "20566",
+              "eth.dst.oui_resolved": "VMware, Inc.",
+              "eth.addr": "00:50:56:80:d5:6c",
+              "eth.addr_resolved": "VMware_80:d5:6c",
+              "eth.addr.oui": "20566",
+              "eth.addr.oui_resolved": "VMware, Inc.",
+              "eth.dst.lg": "0",
+              "eth.lg": "0",
+              "eth.dst.ig": "0",
+              "eth.ig": "0"
+            },
+            "eth.src": "b8:11:4b:ae:55:92",
+            "eth.src_tree": {
+              "eth.src_resolved": "Cisco_ae:55:92",
+              "eth.src.oui": "12063051",
+              "eth.src.oui_resolved": "Cisco Systems, Inc",
+              "eth.addr": "b8:11:4b:ae:55:92",
+              "eth.addr_resolved": "Cisco_ae:55:92",
+              "eth.addr.oui": "12063051",
+              "eth.addr.oui_resolved": "Cisco Systems, Inc",
+              "eth.src.lg": "0",
+              "eth.lg": "0",
+              "eth.src.ig": "0",
+              "eth.ig": "0"
+            },
+            "eth.type": "0x0800"
+          },
+          "ip": {
+            "ip.version": "4",
+            "ip.hdr_len": "20",
+            "ip.dsfield": "0x00",
+            "ip.dsfield_tree": {
+              "ip.dsfield.dscp": "0",
+              "ip.dsfield.ecn": "0"
+            },
+            "ip.len": "1428",
+            "ip.id": "0x2de9",
+            "ip.flags": "0x00",
+            "ip.flags_tree": {
+              "ip.flags.rb": "0",
+              "ip.flags.df": "0",
+              "ip.flags.mf": "0"
+            },
+            "ip.frag_offset": "0",
+            "ip.ttl": "64",
+            "ip.proto": "17",
+            "ip.checksum": "0x62d6",
+            "ip.checksum.status": "2",
+            "ip.src": "10.193.20.30",
+            "ip.addr": "10.193.20.30",
+            "ip.src_host": "10.193.20.30",
+            "ip.host": "10.193.20.30",
+            "ip.dst": "148.93.49.94",
+            "ip.addr": "148.93.49.94",
+            "ip.dst_host": "148.93.49.94",
+            "ip.host": "148.93.49.94"
+          },
+          "udp": {
+            "udp.srcport": "57201",
+            "udp.dstport": "2055",
+            "udp.port": "57201",
+            "udp.port": "2055",
+            "udp.length": "1408",
+            "udp.checksum": "0x7577",
+            "udp.checksum.status": "2",
+            "udp.stream": "0",
+            "Timestamps": {
+              "udp.time_relative": "0.000000000",
+              "udp.time_delta": "0.000000000"
+            },
+            "udp.payload": "00:09:00:19:f6:75:fa:d4:63:c8:0c:b9:1c:f1:a2:23:00:00:02:00:01:04:05:64:00:82:ac:7d:48:0a:0d:13:2d:48:12:06:01:bb:df:62:18:00:00:00:11:40:0a:c1:14:0d:00:00:00:0b:01:00:00:00:00:00:00:01:e8:00:00:00:00:00:00:00:08:f6:75:0c:92:f6:75:d2:f6:00:0a:0d:09:4d:0a:f8:6b:25:48:12:11:0d:3d:c4:8e:00:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:02:bc:00:00:00:00:00:00:00:07:f6:75:0c:98:f6:75:f7:a8:00:82:ac:7d:48:0a:08:ee:e2:48:12:06:01:bb:f9:14:18:00:00:00:11:40:0a:c1:14:0d:00:00:00:0b:01:00:00:00:00:00:00:01:e8:00:00:00:00:00:00:00:08:f6:75:0c:a4:f6:75:ca:5a:00:0a:0d:13:2d:82:ac:7d:48:48:12:06:df:62:01:bb:18:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:01:f8:00:00:00:00:00:00:00:08:f6:75:0c:c8:f6:75:d2:de:00:0a:0d:09:63:94:5d:95:cf:48:12:06:72:ec:27:0f:18:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:50:f7:00:00:00:00:00:00:00:2e:f6:75:0c:ea:f6:75:fa:7e:00:0a:08:8b:73:ac:14:58:9f:48:12:06:20:71:af:0f:18:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:07:f5:00:00:00:00:00:00:00:14:f6:75:0c:f2:f6:75:fa:a4:00:0a:77:01:a3:0a:0d:7f:ea:28:0a:06:44:40:e7:75:18:00:00:00:11:40:0a:c1:14:0d:00:00:00:0b:01:00:00:00:00:00:00:04:2d:00:00:00:00:00:00:00:04:f6:75:0c:f8:f6:75:c1:dc:00:0a:08:8b:73:ac:14:58:3b:48:12:06:20:71:9a:23:18:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:0b:9d:00:00:00:00:00:00:00:26:f6:75:0d:10:f6:75:fa:a8:00:0a:08:8b:f9:0a:78:67:46:48:12:06:eb:80:23:f0:18:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:45:1e:00:00:00:00:00:00:00:17:f6:75:0d:1a:f6:75:f7:96:00:0a:0d:13:da:34:71:dc:d3:b8:2e:11:75:75:0d:98:00:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:26:28:00:00:00:00:00:00:00:3e:f6:75:0d:1e:f6:75:f9:18:00:0a:08:9a:9b:d8:fa:8a:9b:48:12:06:13:89:d7:b6:1e:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:10:60:00:00:00:00:00:00:00:33:f6:75:0d:8e:f6:75:fa:10:00:0a:f8:60:ad:0a:08:89:76:48:12:06:f0:bf:0d:3d:10:00:00:00:11:40:0a:c1:14:0d:00:00:00:0b:01:00:00:00:00:00:00:05:28:00:00:00:00:00:00:00:21:f6:75:0d:b4:f6:75:f8:84:00:0a:0d:13:da:34:71:dc:d3:48:12:11:ea:83:0d:98:00:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:29:64:00:00:00:00:00:00:00:4d:f6:75:0d:c2:f6:75:f8:48:00:0a:0d:13:da:34:71:dc:d3:48:12:11:a0:66:0d:99:00:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:48:a8:00:00:00:00:00:00:00:68:f6:75:0d:c2:f6:75:f8:48:00:0a:08:e6:dd:90:48:e1:15:00:00:06:e3:d2:1f:90:10:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:00:f0:00:00:00:00:00:00:00:06:f6:75:0d:de:f6:75:d4:38:00:0a:08:9b:99:d8:fa:8a:9b:48:12:06:13:89:d7:b6:1e:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:08:f9:00:00:00:00:00:00:00:2a:f6:75:0d:e0:f6:75:ef:68:00:0a:0d:09:63:82:ac:2b:aa:48:12:06:2d:2c:27:0f:18:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:4e:d3:00:00:00:00:00:00:00:2c:f6:75:0d:ec:f6:75:fa:02:00:0a:c3:1e:f8:0a:cb:03:e5:60:18:01:00:00:08:00:00:00:00:00:11:40:0a:cb:03:c1:00:00:00:0c:01:00:00:00:00:00:00:01:c0:00:00:00:00:00:00:00:07:f6:75:0e:06:f6:75:f8:60:00:0a:0d:13:24:90:48:e1:15:00:00:06:f7:8b:1f:90:1a:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:47:b8:00:00:00:00:00:00:00:2e:f6:75:0e:46:f6:75:e5:66:00:0a:08:89:51:22:c8:22:d7:48:12:06:b0:5e:01:bb:1a:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:07:52:03:00:00:00:00:00:00:01:f4:f6:75:0e:58:f6:75:f3:5a:00:0a:0d:13:c1:0a:c0:01:c9:28:0a:06:c2:a1:44:40:10:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:00:a0:00:00:00:00:00:00:00:04:f6:75:0e:5a:f6:75:c1:a6:00:90:48:e1:15:0a:0d:13:24:00:00:06:1f:90:f7:8b:1a:00:00:00:11:40:0a:c1:14:0d:00:00:00:0b:01:00:00:00:00:00:00:1a:6c:00:00:00:00:00:00:00:2a:f6:75:0e:6c:f6:75:e5:62:00:0a:cb:03:fa:0a:c3:1f:79:60:18:11:ce:3c:00:a1:00:00:00:00:0c:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:05:9a:00:00:00:00:00:00:00:0b:f6:75:0e:70:f6:75:f8:ce:00:0a:08:e0:fb:0a:79:08:dd:48:12:06:e9:31:01:bb:1a:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:dc:20:00:00:00:00:00:00:00:55:f6:75:0e:96:f6:75:dd:e2:00:0a:08:86:cf:94:5d:33:25:4a:12:06:c8:18:c2:08:18:00:00:00:0b:40:0a:c1:14:30:00:00:00:11:01:00:00:00:00:00:00:32:60:00:00:00:00:00:00:00:30:f6:75:0e:9c:f6:75:ec:48:00"
+          },
+          "cflow": {
+            "cflow.version": "9",
+            "cflow.count": "25",
+            "cflow.sysuptime": "4134927.060000000",
+            "cflow.timestamp": "Jan 18, 2023 10:14:01.000000000 Eastern Standard Time",
+            "cflow.timestamp_tree": {
+              "cflow.unix_secs": "1674054841"
+            },
+            "cflow.sequence": "485597731",
+            "cflow.source_id": "512",
+            "FlowSet 1 [id=260] (25 flows)": {
+              "cflow.flowset_id": "260",
+              "cflow.flowset_length": "1380",
+              "cflow.template_frame": "362",
+              "Flow 1": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "130.172.125.72",
+                "cflow.dstaddr": "10.13.19.45",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "443",
+                "cflow.dstport": "57186",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "17",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.13",
+                "cflow.outputint": "11",
+                "cflow.direction": "1",
+                "cflow.octets": "488",
+                "cflow.packets": "8",
+                "cflow.timedelta": "50.788000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.066000000",
+                  "cflow.timeend": "4134916.854000000"
+                }
+              },
+              "Flow 2": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.9.77",
+                "cflow.dstaddr": "10.248.107.37",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "17",
+                "cflow.srcport": "3389",
+                "cflow.dstport": "50318",
+                "cflow.tcpflags": "0x00",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "0",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "700",
+                "cflow.packets": "7",
+                "cflow.timedelta": "60.176000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.072000000",
+                  "cflow.timeend": "4134926.248000000"
+                }
+              },
+              "Flow 3": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "130.172.125.72",
+                "cflow.dstaddr": "10.8.238.226",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "443",
+                "cflow.dstport": "63764",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "17",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.13",
+                "cflow.outputint": "11",
+                "cflow.direction": "1",
+                "cflow.octets": "488",
+                "cflow.packets": "8",
+                "cflow.timedelta": "48.566000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.084000000",
+                  "cflow.timeend": "4134914.650000000"
+                }
+              },
+              "Flow 4": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.19.45",
+                "cflow.dstaddr": "130.172.125.72",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "57186",
+                "cflow.dstport": "443",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "504",
+                "cflow.packets": "8",
+                "cflow.timedelta": "50.710000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.120000000",
+                  "cflow.timeend": "4134916.830000000"
+                }
+              },
+              "Flow 5": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.9.99",
+                "cflow.dstaddr": "148.93.149.207",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "29420",
+                "cflow.dstport": "9999",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "20727",
+                "cflow.packets": "46",
+                "cflow.timedelta": "60.820000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.154000000",
+                  "cflow.timeend": "4134926.974000000"
+                }
+              },
+              "Flow 6": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.139.115",
+                "cflow.dstaddr": "172.20.88.159",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "8305",
+                "cflow.dstport": "44815",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "2037",
+                "cflow.packets": "20",
+                "cflow.timedelta": "60.850000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.162000000",
+                  "cflow.timeend": "4134927.012000000"
+                }
+              },
+              "Flow 7": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.119.1.163",
+                "cflow.dstaddr": "10.13.127.234",
+                "cflow.tos": "0x28",
+                "cflow.ip_dscp": "10",
+                "cflow.protocol": "6",
+                "cflow.srcport": "17472",
+                "cflow.dstport": "59253",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "17",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.13",
+                "cflow.outputint": "11",
+                "cflow.direction": "1",
+                "cflow.octets": "1069",
+                "cflow.packets": "4",
+                "cflow.timedelta": "46.308000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.168000000",
+                  "cflow.timeend": "4134912.476000000"
+                }
+              },
+              "Flow 8": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.139.115",
+                "cflow.dstaddr": "172.20.88.59",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "8305",
+                "cflow.dstport": "39459",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "2973",
+                "cflow.packets": "38",
+                "cflow.timedelta": "60.824000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.192000000",
+                  "cflow.timeend": "4134927.016000000"
+                }
+              },
+              "Flow 9": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.139.249",
+                "cflow.dstaddr": "10.120.103.70",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "60288",
+                "cflow.dstport": "9200",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "17694",
+                "cflow.packets": "23",
+                "cflow.timedelta": "60.028000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.202000000",
+                  "cflow.timeend": "4134926.230000000"
+                }
+              },
+              "Flow 10": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.19.218",
+                "cflow.dstaddr": "52.113.220.211",
+                "cflow.tos": "0xb8",
+                "cflow.ip_dscp": "46",
+                "cflow.protocol": "17",
+                "cflow.srcport": "30069",
+                "cflow.dstport": "3480",
+                "cflow.tcpflags": "0x00",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "0",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "9768",
+                "cflow.packets": "62",
+                "cflow.timedelta": "60.410000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.206000000",
+                  "cflow.timeend": "4134926.616000000"
+                }
+              },
+              "Flow 11": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.154.155",
+                "cflow.dstaddr": "216.250.138.155",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "5001",
+                "cflow.dstport": "55222",
+                "cflow.tcpflags": "0x1e",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "1",
+                  "cflow.tcpflags.syn": "1",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "4192",
+                "cflow.packets": "51",
+                "cflow.timedelta": "60.546000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.318000000",
+                  "cflow.timeend": "4134926.864000000"
+                }
+              },
+              "Flow 12": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.248.96.173",
+                "cflow.dstaddr": "10.8.137.118",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "61631",
+                "cflow.dstport": "3389",
+                "cflow.tcpflags": "0x10",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "17",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.13",
+                "cflow.outputint": "11",
+                "cflow.direction": "1",
+                "cflow.octets": "1320",
+                "cflow.packets": "33",
+                "cflow.timedelta": "60.112000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.356000000",
+                  "cflow.timeend": "4134926.468000000"
+                }
+              },
+              "Flow 13": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.19.218",
+                "cflow.dstaddr": "52.113.220.211",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "17",
+                "cflow.srcport": "60035",
+                "cflow.dstport": "3480",
+                "cflow.tcpflags": "0x00",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "0",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "10596",
+                "cflow.packets": "77",
+                "cflow.timedelta": "60.038000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.370000000",
+                  "cflow.timeend": "4134926.408000000"
+                }
+              },
+              "Flow 14": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.19.218",
+                "cflow.dstaddr": "52.113.220.211",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "17",
+                "cflow.srcport": "41062",
+                "cflow.dstport": "3481",
+                "cflow.tcpflags": "0x00",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "0",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "18600",
+                "cflow.packets": "104",
+                "cflow.timedelta": "60.038000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.370000000",
+                  "cflow.timeend": "4134926.408000000"
+                }
+              },
+              "Flow 15": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.230.221",
+                "cflow.dstaddr": "144.72.225.21",
+                "cflow.tos": "0x00",
+                "cflow.ip_dscp": "0",
+                "cflow.protocol": "6",
+                "cflow.srcport": "58322",
+                "cflow.dstport": "8080",
+                "cflow.tcpflags": "0x10",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "240",
+                "cflow.packets": "6",
+                "cflow.timedelta": "50.778000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.398000000",
+                  "cflow.timeend": "4134917.176000000"
+                }
+              },
+              "Flow 16": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.155.153",
+                "cflow.dstaddr": "216.250.138.155",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "5001",
+                "cflow.dstport": "55222",
+                "cflow.tcpflags": "0x1e",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "1",
+                  "cflow.tcpflags.syn": "1",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "2297",
+                "cflow.packets": "42",
+                "cflow.timedelta": "57.736000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.400000000",
+                  "cflow.timeend": "4134924.136000000"
+                }
+              },
+              "Flow 17": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.9.99",
+                "cflow.dstaddr": "130.172.43.170",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "11564",
+                "cflow.dstport": "9999",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "20179",
+                "cflow.packets": "44",
+                "cflow.timedelta": "60.438000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.412000000",
+                  "cflow.timeend": "4134926.850000000"
+                }
+              },
+              "Flow 18": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.195.30.248",
+                "cflow.dstaddr": "10.203.3.229",
+                "cflow.tos": "0x60",
+                "cflow.ip_dscp": "24",
+                "cflow.protocol": "1",
+                "cflow.srcport": "0",
+                "cflow.dstport": "2048",
+                "cflow.tcpflags": "0x00",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "0",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "17",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.203.3.193",
+                "cflow.outputint": "12",
+                "cflow.direction": "1",
+                "cflow.octets": "448",
+                "cflow.packets": "7",
+                "cflow.timedelta": "59.994000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.438000000",
+                  "cflow.timeend": "4134926.432000000"
+                }
+              },
+              "Flow 19": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.19.36",
+                "cflow.dstaddr": "144.72.225.21",
+                "cflow.tos": "0x00",
+                "cflow.ip_dscp": "0",
+                "cflow.protocol": "6",
+                "cflow.srcport": "63371",
+                "cflow.dstport": "8080",
+                "cflow.tcpflags": "0x1a",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "1",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "18360",
+                "cflow.packets": "46",
+                "cflow.timedelta": "55.072000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.502000000",
+                  "cflow.timeend": "4134921.574000000"
+                }
+              },
+              "Flow 20": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.137.81",
+                "cflow.dstaddr": "34.200.34.215",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "45150",
+                "cflow.dstport": "443",
+                "cflow.tcpflags": "0x1a",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "1",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "479747",
+                "cflow.packets": "500",
+                "cflow.timedelta": "58.626000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.520000000",
+                  "cflow.timeend": "4134925.146000000"
+                }
+              },
+              "Flow 21": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.13.19.193",
+                "cflow.dstaddr": "10.192.1.201",
+                "cflow.tos": "0x28",
+                "cflow.ip_dscp": "10",
+                "cflow.protocol": "6",
+                "cflow.srcport": "49825",
+                "cflow.dstport": "17472",
+                "cflow.tcpflags": "0x10",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "160",
+                "cflow.packets": "4",
+                "cflow.timedelta": "45.900000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.522000000",
+                  "cflow.timeend": "4134912.422000000"
+                }
+              },
+              "Flow 22": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "144.72.225.21",
+                "cflow.dstaddr": "10.13.19.36",
+                "cflow.tos": "0x00",
+                "cflow.ip_dscp": "0",
+                "cflow.protocol": "6",
+                "cflow.srcport": "8080",
+                "cflow.dstport": "63371",
+                "cflow.tcpflags": "0x1a",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "1",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "17",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.13",
+                "cflow.outputint": "11",
+                "cflow.direction": "1",
+                "cflow.octets": "6764",
+                "cflow.packets": "42",
+                "cflow.timedelta": "55.030000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.540000000",
+                  "cflow.timeend": "4134921.570000000"
+                }
+              },
+              "Flow 23": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.203.3.250",
+                "cflow.dstaddr": "10.195.31.121",
+                "cflow.tos": "0x60",
+                "cflow.ip_dscp": "24",
+                "cflow.protocol": "17",
+                "cflow.srcport": "52796",
+                "cflow.dstport": "161",
+                "cflow.tcpflags": "0x00",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "0",
+                  "cflow.tcpflags.psh": "0",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "12",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "1434",
+                "cflow.packets": "11",
+                "cflow.timedelta": "59.998000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.544000000",
+                  "cflow.timeend": "4134926.542000000"
+                }
+              },
+              "Flow 24": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.224.251",
+                "cflow.dstaddr": "10.121.8.221",
+                "cflow.tos": "0x48",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "59697",
+                "cflow.dstport": "443",
+                "cflow.tcpflags": "0x1a",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "1",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "56352",
+                "cflow.packets": "85",
+                "cflow.timedelta": "53.068000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.582000000",
+                  "cflow.timeend": "4134919.650000000"
+                }
+              },
+              "Flow 25": {
+                "cflow.is_multicast": "0x00",
+                "cflow.srcaddr": "10.8.134.207",
+                "cflow.dstaddr": "148.93.51.37",
+                "cflow.tos": "0x4a",
+                "cflow.ip_dscp": "18",
+                "cflow.protocol": "6",
+                "cflow.srcport": "51224",
+                "cflow.dstport": "49672",
+                "cflow.tcpflags": "0x18",
+                "cflow.tcpflags_tree": {
+                  "cflow.tcpflags.reserved": "0x00",
+                  "cflow.tcpflags.urg": "0",
+                  "cflow.tcpflags.ack": "1",
+                  "cflow.tcpflags.psh": "1",
+                  "cflow.tcpflags.rst": "0",
+                  "cflow.tcpflags.syn": "0",
+                  "cflow.tcpflags.fin": "0"
+                },
+                "cflow.inputint": "11",
+                "Forwarding Status": {
+                  "cflow.forwarding_status": "1",
+                  "cflow.forwarding_status_forward_code": "0"
+                },
+                "cflow.nexthop": "10.193.20.48",
+                "cflow.outputint": "17",
+                "cflow.direction": "1",
+                "cflow.octets": "12896",
+                "cflow.packets": "48",
+                "cflow.timedelta": "56.748000000",
+                "cflow.timedelta_tree": {
+                  "cflow.timestart": "4134866.588000000",
+                  "cflow.timeend": "4134923.336000000"
+                }
+              },
+              "cflow.padding": "00"
+            }
+          }
+        }
+      }
+    }
+]
