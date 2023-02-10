@@ -4,7 +4,7 @@ import csv
 
 def getFlowsetDataCalculations(JSONfilename: str, view: str):
     """
-    Get all flowset data from a file.
+    Get all flowset calculation data from a file.
     
     params:
         JSONfilename : str
@@ -140,7 +140,7 @@ def getUniqueIPs(JSONfilename: str, writeToText: bool):
 
 def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
     """
-    Get all flowset data from a file.
+    Get all flow and flowset data from a file.
     
     params:
         JSONfilename : str
@@ -237,6 +237,23 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
 
 
 def writeFlowsetsAndFlowsToCSV(JSONfilename: str, flowsetsOutputFileName: str, flowsOutputFileName: str, siteId: int):
+    """
+    Write the netflow data into files for importing into the DB
+    
+    params:
+        JSONfilename : str
+            The name of the json file to extract data from
+        flowsetsOutputFileName : str
+            The desired name of the output flowsets file
+        flowsOutputFileName : str
+            The desired name of the output flows file
+        siteId : int
+            The id of the site PCAP data
+
+    return:
+        void
+    """
+    
     flowsetsTableData, flowsTableData = getFlowsetsAndFlows(JSONfilename, siteId)
 
     with open(flowsetsOutputFileName, "w", newline='') as f:
@@ -265,24 +282,25 @@ def writeFlowsetsAndFlowsToCSV(JSONfilename: str, flowsetsOutputFileName: str, f
 
 
 def main():
+    start = time.time()
 
     # getFullFlowSetData Example Call
     # data = getFullFlowSetData('initialPCAPdata.json', 'Application')
     # for k,v in data.items():
     #     print(k, ':', v)
 
+
     # getUniqueIPs Example Call
     # srcIPs, destIPs = getUniqueIPs('initialPCAPdata.json', True)
+
 
     # getFlowsets Example Call
     # flowsetTableData, flowsTableData = getFlowsets("oneFlowset.json", 1)
 
-    # writeFlowsetsToCSV Example Call
-    # writeFlowsetsToCSV("oneFlowset.json", "oneFlowsetFlowsets.csv", "oneFlowsetFlows.csv", 1)
 
-    
-    start = time.time()
-    writeFlowsetsAndFlowsToCSV("nf2_maktai.json", "nf2_maktaiFlowsets.csv", "nf2_maktaiFlows.csv", 1)
+    # writeFlowsetsToCSV Example Call
+    # writeFlowsetsToCSV("oneSpringhillFlowset.json", "oneFlowsetFlowsets.csv", "oneFlowsetFlows.csv", 1)
+
     print("Total time elapsed: ", time.time() - start)
 
 
