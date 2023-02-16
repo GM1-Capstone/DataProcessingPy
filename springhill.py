@@ -1,9 +1,12 @@
 import json
 import time
 import csv
+import mysql.connector
 
 def getFlowsetDataCalculations(JSONfilename: str, view: str):
     """
+    OUTDATED
+
     Get all flowset calculation data from a file.
     
     params:
@@ -97,6 +100,7 @@ def getUniqueIPs(JSONfilename: str, writeToText: bool):
         uniqueDestinationIPs : set (unordered list)
             A list of unique destination IPs
     """
+
     # Initialize return data
     srcips = []
     destips = []
@@ -125,12 +129,12 @@ def getUniqueIPs(JSONfilename: str, writeToText: bool):
     
     # If desired, write unique IPs to text files as well
     if writeToText:
-        with open('uniqueSourceIPs.txt', 'w') as src:
+        with open('IPs/uniqueSourceIPs.txt', 'w') as src:
             for ip in uniqueSourceIPs:
                 src.write(ip)
                 src.write("\n")
 
-        with open('uniqueDestinationIPs.txt', 'w') as dst:
+        with open('IPs/uniqueDestinationIPs.txt', 'w') as dst:
             for ip in uniqueDestinationIPs:
                 dst.write(ip)
                 dst.write("\n")
@@ -140,7 +144,7 @@ def getUniqueIPs(JSONfilename: str, writeToText: bool):
 
 def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
     """
-    Get all flow and flowset data from a file.
+    Get all flows and flowsets from a JSON file
     
     params:
         JSONfilename : str
@@ -156,11 +160,37 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
     # Initialize return variable
     flowsetsTableData = []
     flowsTableData = []
+
+    # Mapping dscp_marking to priority info
+    ip_dscp_dict = {
+        46: ["Unknown", "Unknown"],
+        47: ["Voice","Premium +"],
+        48: ["Voice","Premium +"],
+        34: ["Interactive Video", "Premium"],
+        26: ["Streaming Control", "Enhanced +"],
+        24: ["Streaming Control", "Enhanced +"],
+        18: ["Normal Business", "Enhanced"],
+        0: ["Default", "Basic +"],
+        10: ["Scavenger", "Basic"],
+        12: ["Scavenger", "Basic"],
+    }
+
+    # Establish server connection
+    cnxFlows = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
+    cursor = cnxFlows.cursor()
+
+    query = (
+        "select flowset_id from springhillFlows where flowset_id=(select max(flowset_id) from springhillFlows) limit 1"
+    )
+
+    cursor.execute(query)
+    starting_flowset_id = cursor.fetchall()[0][0] + 1
+
     # Read in data from the file
     with open(JSONfilename) as f:
         data = json.loads(f.read())
 
-    flowSetUniqueIdCounter = 1
+    flowSetUniqueIdCounter = starting_flowset_id
 
     # Iterate through each flowset, getting all values for the table
     for FullFlowSetData in data:
@@ -182,6 +212,7 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
 
         numFlows = FullFlowSetData["_source"]["layers"]["cflow"]["cflow.count"]        
         flowSet = FullFlowSetData["_source"]["layers"]["cflow"]
+
         for key in flowSet.keys():
             if key[0] != 'c':
                 flowsetNumber = key
@@ -191,7 +222,7 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
             "siteId": siteId,
             "index": index,
             "frameTime": frameTime,
-            "frameEpoch": frameEpoch,
+            "frameEpoch": str(frameEpoch),
             "frameLen": frameLen,
             "ethDstOuiResolve":ethDstOuiResolve,
             "ethDstAddrOuiResolve": ethDstAddrOuiResolve,
@@ -206,14 +237,20 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
             "flowsetLength": flowsetLength,
             "flowsetUniqueId": flowSetUniqueIdCounter
         }
+
         flowsetsTableData.append(oneFlowsetData)
 
-        # Iterate through each flow, appending 
         flows = flowSet[flowsetNumber]
         numFlows = len(flows) - 4
 
+        # Iterate through each flow, appending the data to the return list
         for flowKey, flowVals in flows.items():
-            if flowKey[0] != 'c':
+            if flowKey[0] != 'c' and flowKey[0] != 'T':
+
+                ip_dscp = int(flowVals["cflow.ip_dscp"])
+                type_dscp = ip_dscp_dict[ip_dscp][0]
+                priority = ip_dscp_dict[ip_dscp][1]
+
                 oneFlow = {
                     "uniqueFlowsetId": flowSetUniqueIdCounter,
                     "flowNumber": int(flowKey[5:]),
@@ -228,34 +265,38 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
                     "outputDirection": (flowVals["cflow.direction"]),
                     "bytes": int(flowVals["cflow.octets"]),
                     "packets": int(flowVals["cflow.packets"]),
-                    "timeDelta": float(flowVals["cflow.timedelta"])
+                    "timeDelta": float(flowVals["cflow.timedelta"]),
+                    "ip_dscp": ip_dscp,
+                    "type_dscp": type_dscp,
+                    "priority": priority
                 }
+
                 flowsTableData.append(oneFlow)
 
         flowSetUniqueIdCounter += 1
+
     return flowsetsTableData, flowsTableData
 
 
 def writeFlowsetsAndFlowsToCSV(JSONfilename: str, flowsetsOutputFileName: str, flowsOutputFileName: str, siteId: int):
     """
-    Write the netflow data into files for importing into the DB
+    Write the flowset and flows data to CSV for insertion into DB tables
     
     params:
         JSONfilename : str
             The name of the json file to extract data from
         flowsetsOutputFileName : str
-            The desired name of the output flowsets file
+            The name of the file to write flowsets to
         flowsOutputFileName : str
-            The desired name of the output flows file
+            The name of the file to write flows to
         siteId : int
-            The id of the site PCAP data
-
-    return:
-        void
+            The id of the site, in this case springhill is "1"
     """
-    
+
+    # Get flowset/flows data
     flowsetsTableData, flowsTableData = getFlowsetsAndFlows(JSONfilename, siteId)
 
+    # Write the data to flowsets CSV file
     with open(flowsetsOutputFileName, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["flowsetUniqueId", "siteId", "flowsetName", "index", "frameTime", "frameEpoch", "frameLen", "ethDstOuiResolve", "ethDstAddrOuiResolve", "ethSrcOuiResolve", "ethSrcAddrOuiResolve", "ipSrc", "ipSrcHost", "ipDst", "ipDstHost", "numFlows", "flowsetLength"])
@@ -268,41 +309,120 @@ def writeFlowsetsAndFlowsToCSV(JSONfilename: str, flowsetsOutputFileName: str, f
 
     f.close()    
 
+    # Write the data to flows CSV file
     with open(flowsOutputFileName, "w", newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["uniqueFlowsetId","flowNumber", "srcAddr", "dstAddr", "srcPort", "dstPort", "forwardingStatus", "forwardingStatusCode", "nextHop", "outputInt", "outputDirection", "bytes", "packets", "timeDelta"])
+        writer.writerow(["uniqueFlowsetId","flowNumber", "srcAddr", "dstAddr", "srcPort", "dstPort", "forwardingStatus", "forwardingStatusCode", "nextHop", "outputInt", "outputDirection", "bytes", "packets", "timeDelta", "ip_dscp", "type_dscp", "priority"])
         
         for i in range(len(flowsTableData)):
             flow = flowsTableData[i]
             writer.writerow([flow["uniqueFlowsetId"], flow["flowNumber"], flow["srcAddr"], flow["dstAddr"], flow["srcPort"], flow["dstPort"], 
                              flow["forwardingStatus"], flow["forwardingStatusCode"], flow["nextHop"], flow["outputInt"], flow["outputDirection"], flow["bytes"], 
-                             flow["packets"], flow["timeDelta"]])
+                             flow["packets"], flow["timeDelta"], flow["ip_dscp"], flow["type_dscp"], flow["priority"]])
 
     f.close()   
 
 
+def insertFlows(pathToFlowsAsCSV : str):
+    """
+    Insert flows into the table from a CSV file
+    
+    params:
+        pathToFlowsAsCSV : str
+            the file path to the file to insert
+    """
+        
+    # Establish server connection
+    cnxFlows = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
+    cursor = cnxFlows.cursor()
+
+    # Open and read the file line by line
+    with open(pathToFlowsAsCSV) as f:
+        reader = csv.reader(f)
+
+        first = True
+
+        # Iterate through each line
+        for row in reader:
+            if not first:
+                row[0] = int(row[0])
+
+                query = (
+                    "INSERT INTO springhillFlows (flowset_id, flow_number, src_addr, dst_addr, src_port, dst_port, forwarding_status, forwarding_status_code, next_hop, output_int, output_direction, bytes, packets, time_delta, ip_dscp, type_dscp, priority) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                )   
+
+                cursor.execute(query, row)
+                cnxFlows.commit()
+            first = False
+
+    f.close()
+    return
+
+
+def insertFlowsets(pathToFlowsetsAsCSV : str):
+    """
+    Insert flowsets into the table from a CSV file
+    
+    params:
+        pathToFlowsetsAsCSV : str
+            the file path to the file to insert
+    """   
+
+    # Establish server connection
+    cnxFlows = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
+    cursor = cnxFlows.cursor()
+
+    # Open and read the file line by line
+    with open(pathToFlowsetsAsCSV) as f:
+        reader = csv.reader(f)
+
+        first = True
+
+        # Iterate through each line
+        for row in reader:
+            if not first:
+                row[0] = int(row[0])
+
+                query = (
+                    "INSERT INTO springhillFlowsets (site_id, flowset_number, indx, frame_time, frame_epoch, frame_len, eth_dst_oui_resolve, eth_src_oui_resolve, ip_src, ip_src_host, ip_dst, ip_dst_host, num_flows, flowset_length) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                )   
+
+                cursor.execute(query, row)
+                cnxFlows.commit()
+
+            first = False
+
+    f.close()
+    return
+
+
 def main():
-    start = time.time()
+
+    # Connect to the database example
+    # cnx = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
+    # cursor = cnx.cursor()
 
     # getFullFlowSetData Example Call
-    # data = getFullFlowSetData('initialPCAPdata.json', 'Application')
+    # data = getFullFlowSetData("PCAP Data/springhill.json", "Application")
     # for k,v in data.items():
     #     print(k, ':', v)
 
-
     # getUniqueIPs Example Call
-    # srcIPs, destIPs = getUniqueIPs('initialPCAPdata.json', True)
-
+    # srcIPs, destIPs = getUniqueIPs("PCAP Data/initialPCAPdata.json", True)
 
     # getFlowsets Example Call
-    # flowsetTableData, flowsTableData = getFlowsets("oneFlowset.json", 1)
+    # flowsetData, flowsData = getFlowsets("PCAP Data/springhill.json", 1)
 
+    # writeFlowsetsAndFlowsToCSV Example Call
+    # writeFlowsetsAndFlowsToCSV("PCAP Data/springhill.json", "CSV Data/springhillFlowsets.csv", "CSV Data/springhillFlows.csv", 1)
+    
+    # insertFlows Example Call
+    # insertFlows("CSV Data/springhillFlows.csv")
 
-    # writeFlowsetsToCSV Example Call
-    # writeFlowsetsToCSV("oneSpringhillFlowset.json", "oneFlowsetFlowsets.csv", "oneFlowsetFlows.csv", 1)
+    # insertFlowsets Example Call
+    # insertFlowsets("CSV Data/springhillFlowsets.csv")
 
-    print("Total time elapsed: ", time.time() - start)
-
+    return
 
 
 if __name__ == "__main__":
