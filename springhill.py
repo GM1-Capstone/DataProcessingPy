@@ -1,7 +1,9 @@
 import json
 import time
 import csv
+import math
 import mysql.connector
+
 
 def getFlowsetDataCalculations(JSONfilename: str, view: str):
     """
@@ -84,7 +86,7 @@ def getFlowsetDataCalculations(JSONfilename: str, view: str):
     return allData
 
 
-def getUniqueIPs(JSONfilename: str, writeToText: bool):
+def getUniqueIPs(JSONfilename: str, pathToNewFile: str):
     """
     Get all flowset data from a file.
     
@@ -127,17 +129,16 @@ def getUniqueIPs(JSONfilename: str, writeToText: bool):
     uniqueSourceIPs = set(srcips)
     uniqueDestinationIPs = set(destips)
     
-    # If desired, write unique IPs to text files as well
-    if writeToText:
-        with open('IPs/uniqueSourceIPs.txt', 'w') as src:
-            for ip in uniqueSourceIPs:
-                src.write(ip)
-                src.write("\n")
+    # Write unique IPs to text files as well
+    with open('IPs/uniqueSourceIPs.txt', 'w') as src:
+        for ip in uniqueSourceIPs:
+            src.write(ip)
+            src.write("\n")
 
-        with open('IPs/uniqueDestinationIPs.txt', 'w') as dst:
-            for ip in uniqueDestinationIPs:
-                dst.write(ip)
-                dst.write("\n")
+    with open('IPs/uniqueDestinationIPs.txt', 'w') as dst:
+        for ip in uniqueDestinationIPs:
+            dst.write(ip)
+            dst.write("\n")
 
     return uniqueSourceIPs, uniqueDestinationIPs
 
@@ -278,7 +279,7 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
     return flowsetsTableData, flowsTableData
 
 
-def writeFlowsetsAndFlowsToCSV(JSONfilename: str, flowsetsOutputFileName: str, flowsOutputFileName: str, siteId: int):
+def writeFlowsetsAndFlowsToCSV(JSONfilename: str, siteId: int, flowsetsOutputFileName="flowsets.csv", flowsOutputFileName="flows.csv"):
     """
     Write the flowset and flows data to CSV for insertion into DB tables
     
@@ -395,12 +396,380 @@ def insertFlowsets(pathToFlowsetsAsCSV : str):
     f.close()
     return
 
-
 def main():
 
     # Connect to the database example
-    # cnx = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
-    # cursor = cnx.cursor()
+    cnx = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
+    cursor = cnx.cursor()
+
+    query = (
+            "select min(frame_epoch) from springhillFlowsets"
+            )   
+
+    cursor.execute(query)
+    min = cursor.fetchall()
+    cnx.commit()
+    print(min)
+    return
+    query = (
+            "select max(frame_epoch) from springhillFlowsets"
+            )   
+
+    cursor.execute(query)
+    max = cursor.fetchall()
+    cnx.commit()    
+
+    min_seconds = math.floor(float(min[0][0]))
+    max_seconds = math.ceil(float(max[0][0]))
+
+    time_slices = []
+    temp = min_seconds
+    while temp <= max_seconds:
+        time_slices.append(temp)
+        temp += 3
+
+    time_slices.append(max_seconds)
+
+    pp = []
+    p = []
+    ep = []
+    e = []
+    bp = []
+    b = []
+
+    start_id = -1
+
+    for i in range(len(time_slices) - 1):
+        start_time = time_slices[i]
+        end_time = time_slices[i+1]        
+        # print(start_time, end_time)
+
+        query = (
+                "select id from springhillFlowsets where frame_epoch >= %s and frame_epoch < %s"
+                )  
+
+        cursor.execute(query, (start_time, end_time))
+        slice = cursor.fetchall()
+        # print(len(slice))
+
+        if start_id == -1:
+            start_id = 0
+            end_id = len(slice)
+        else:
+            start_id = end_id
+            end_id = end_id + len(slice)
+        print("start, end", start_id, end_id)
+
+
+        ### PREMIUM + DATA ###
+
+        ppbytes = (
+                "select sum(bytes) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority= %s"
+                )
+        
+        cursor.execute(ppbytes, (start_id, end_id, "Premium +"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        ppbr = float((res * 8) / (end_time - start_time))
+
+        pppackets = (
+                "select sum(packets) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority = %s"
+                )
+    
+        cursor.execute(pppackets, (start_id, end_id, "Premium +"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        pppr = float(res / (end_time - start_time))
+
+        #######################
+
+
+
+
+        ### PREMIUM DATA ###
+
+        pbytes = (
+                "select sum(bytes) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority= %s"
+                )
+        
+        cursor.execute(pbytes, (start_id, end_id, "Premium"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        pbr = float((res * 8) / (end_time - start_time))
+
+        ppackets = (
+                "select sum(packets) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority = %s"
+                )
+    
+        cursor.execute(ppackets, (start_id, end_id, "Premium"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        ppr = float((res) / (end_time - start_time))
+
+        ######################
+
+
+
+
+
+        ### ENHANCED + DATA ###
+
+        epbytes = (
+                "select sum(bytes) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority= %s"
+                )
+        
+        cursor.execute(epbytes, (start_id, end_id, "Enhanced +"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        epbr = float((res * 8) / (end_time - start_time))
+
+        eppackets = (
+                "select sum(packets) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority = %s"
+                )
+    
+        cursor.execute(eppackets, (start_id, end_id, "Enhanced +"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        eppr = float((res) / (end_time - start_time))
+
+        ########################
+
+
+
+        ### ENHANCED DATA ###
+
+        ebytes = (
+                "select sum(bytes) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority= %s"
+                )
+        
+        cursor.execute(ebytes, (start_id, end_id, "Enhanced"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        ebr = float((res * 8) / (end_time - start_time))
+
+        epackets = (
+                "select sum(packets) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority = %s"
+                )
+    
+        cursor.execute(epackets, (start_id, end_id, "Enhanced"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        epr = float((res) / (end_time - start_time))
+
+        ######################
+
+
+
+        ### BASIC + DATA ###
+
+        bpbytes = (
+                "select sum(bytes) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority= %s"
+                )
+        
+        cursor.execute(bpbytes, (start_id, end_id, "Basic +"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        bpbr = float((res * 8) / (end_time - start_time))
+
+        bppackets = (
+                "select sum(packets) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority = %s"
+                )
+    
+        cursor.execute(bppackets, (start_id, end_id, "Basic +"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        bppr = float((res) / (end_time - start_time))
+
+        ####################
+
+
+        ### BASIC DATA ###
+
+        bbytes = (
+                "select sum(bytes) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority= %s"
+                )
+        
+        cursor.execute(bbytes, (start_id, end_id, "Basic"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        bbr = float((res * 8) / (end_time - start_time))
+
+        bpackets = (
+                "select sum(packets) from springhillFlows where flowset_id > %s and flowset_id <= %s and priority = %s"
+                )
+    
+        cursor.execute(bpackets, (start_id, end_id, "Basic"))
+        res = cursor.fetchall()[0][0]
+        if res == None:
+            res = 0
+        bpr = float((res) / (end_time - start_time))    
+
+        ####################  
+
+
+
+        pp.append(["Premium +", start_time, end_time, ppbr, pppr])
+        p.append(["Premium",start_time, end_time, pbr, ppr])
+
+        ep.append(["Enhanced +", start_time, end_time, epbr, eppr])
+        e.append(["Enhanced",start_time, end_time, ebr, epr])
+
+        bp.append(["Basic +", start_time, end_time, bpbr, bppr])
+        b.append(["Basic", start_time, end_time, bbr, bpr])
+
+
+    # maxbrpp = -1
+    # maxprpp = -1
+
+    # maxbrp = -1
+    # maxprp = -1    
+    
+    # maxbrep = -1
+    # maxprep = -1
+
+    # maxbre = -1
+    # maxpre = -1
+
+    # maxbrbp = -1
+    # maxprbp = -1
+
+    # maxbrb = -1
+    # maxprb = -1
+
+    # for i in range(len(pp)):
+    #     brpp = pp[i][3]
+    #     if brpp > maxbrpp:
+    #         maxbrpp = brpp
+
+    #     prpp = pp[i][4]
+    #     if prpp > maxprpp:
+    #         maxprpp = prpp
+
+
+    #     brp = p[i][3]
+    #     if brp > maxbrp:
+    #         maxbrp = brp
+
+    #     prp = p[i][4]
+    #     if prp > maxprp:
+    #         maxprp = prp
+
+
+    #     brep = ep[i][3]
+    #     if brep > maxbrep:
+    #         maxbrep = brep
+
+    #     prep = ep[i][4]
+    #     if prep > maxprep:
+    #         maxprep = prep
+
+
+    #     bre = e[i][3]
+    #     if bre > maxbre:
+    #         maxbre = bre
+
+    #     pre = e[i][4]
+    #     if pre > maxpre:
+    #         maxpre = pre
+
+
+
+    #     brbp = bp[i][3]
+    #     if brbp > maxbrbp:
+    #         maxbrbp = brbp
+
+    #     prbp = bp[i][4]
+    #     if prbp > maxprbp:
+    #         maxprbp = prbp
+
+
+    #     brb = b[i][3]
+    #     if brb > maxbrb:
+    #         maxbrb = brb
+
+    #     prb = b[i][4]
+    #     if prb > maxprb:
+    #         maxprb = prb
+
+    # print("prem +")
+    # print(maxbrpp, maxprpp)
+
+    # print("prem")
+    # print(maxbrp, maxprp  )
+    
+    # print("enhanced plus")
+    # print(maxbrep, maxprep)
+
+    # print("enhanced")
+    # print(maxbre, maxpre)
+
+    # print("basic plsu")
+    # print(maxbrbp, maxprbp)
+
+    # print("basic")
+    # print(maxbrb, maxprb)
+
+    return
+    all_info_by_priority = pp + p + ep + e + bp + b
+    for ele in all_info_by_priority:
+        print(ele)
+    
+    all_info_by_slice = []
+    for i in range(len(pp)):
+        all_info_by_slice.append(pp[i])
+        all_info_by_slice.append(p[i])
+        all_info_by_slice.append(ep[i])
+        all_info_by_slice.append(e[i])
+        all_info_by_slice.append(bp[i])
+        all_info_by_slice.append(b[i])
+    
+
+    # for ele in all_info_by_slice:
+    #     print(ele)
+
+    # with open("SpringhillGraphData3SecondSlicesByPriority.csv", "w", newline='') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow(["priority", "start_time", "end_time", "bitrate(bits/second)", "packetrate(packets/second)"])
+        
+    #     for i in range(len(all_info_by_priority)):
+    #         writer.writerow(all_info_by_priority[i])
+
+    # f.close()   
+
+    # with open("SpringhillGraphData3SecondSlicesBySlice.csv", "w", newline='') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow(["priority", "start_time", "end_time", "bitrate(bits/second)", "packetrate(packets/second)"])
+        
+    #     for i in range(len(pp)):
+    #         writer.writerow(pp[i])
+    #         writer.writerow(p[i])
+    #         writer.writerow(ep[i])
+    #         writer.writerow(e[i])
+    #         writer.writerow(bp[i])
+    #         writer.writerow(b[i])
+
+    # f.close()  
+
+
+    # cursor.execute(query)
+    # slice1 = cursor.fetchall()
+    # cnx.commit()   
+    # print(len(slice1))
+        # Get data between start and end
+        # Get bitrate, get packetrate, append to list for each priority
+
+
 
     # getFullFlowSetData Example Call
     # data = getFullFlowSetData("PCAP Data/springhill.json", "Application")
