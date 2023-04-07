@@ -192,6 +192,7 @@ def getFlowsetsAndFlows(JSONfilename: str, siteId: int):
         data = json.loads(f.read())
 
     flowSetUniqueIdCounter = starting_flowset_id
+    # flowSetUniqueIdCounter = 1
 
     # Iterate through each flowset, getting all values for the table
     for FullFlowSetData in data:
@@ -383,9 +384,9 @@ def insertFlowsets(pathToFlowsetsAsCSV : str):
         for row in reader:
             if not first:
                 row[0] = int(row[0])
-
+                print(len(row))
                 query = (
-                    "INSERT INTO springhillFlowsets (site_id, flowset_number, indx, frame_time, frame_epoch, frame_len, eth_dst_oui_resolve, eth_src_oui_resolve, ip_src, ip_src_host, ip_dst, ip_dst_host, num_flows, flowset_length) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                    "INSERT INTO springhillFlowsets (id, site_id, flowset_number, indx, frame_time, frame_epoch, frame_len, eth_dst_oui_resolve, eth_dst_addr_oui_resolve, eth_src_oui_resolve, eth_src_addr_oui_resolve, ip_src, ip_src_host, ip_dst, ip_dst_host, num_flows, flowset_length) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
                 )   
 
                 cursor.execute(query, row)
@@ -401,6 +402,14 @@ def main():
     # Connect to the database example
     cnx = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
     cursor = cnx.cursor()
+
+    # writeFlowsetsAndFlowsToCSV('PCAP DATA/unknown.json',1)
+    # return
+    insertFlows('flows.csv')
+    return
+
+
+
 
     query = (
             "select min(frame_epoch) from springhillFlowsets"
