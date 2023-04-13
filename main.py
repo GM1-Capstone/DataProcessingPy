@@ -19,6 +19,17 @@ master.geometry("550x350")
 
 
 def generateDataTable(site_name: str, start_epoch, path = ""):
+    """
+    Generate the data table data necessary for updating the data table in "real time" 
+    
+    params:
+        site_name : str
+            Which site to generate data from
+        start_epoch : int
+            The frame_epoch (unix time) of the date selected
+        path : str
+            The destination path to write to
+    """
     cnx = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
     cursor = cnx.cursor()
 
@@ -44,6 +55,10 @@ def generateDataTable(site_name: str, start_epoch, path = ""):
     min = cursor.fetchall()
     cnx.commit()    
 
+    if min[0][0] is None or maxx[0][0] is None:
+        print("Please select a valid date")
+        return
+    
     min_seconds = math.floor(float(min[0][0]))
     max_seconds = math.ceil(float(maxx[0][0]))
 
@@ -71,7 +86,7 @@ def generateDataTable(site_name: str, start_epoch, path = ""):
 
         start_time = time_slices[i]
         end_time = time_slices[i+1]        
-        # print(start_time, end_time)
+        print("Start time, end time", start_time, end_time)
 
         query = (
                 "select id from " + site_name_flowsets + " where frame_epoch >= %s and frame_epoch < %s"
@@ -79,13 +94,6 @@ def generateDataTable(site_name: str, start_epoch, path = ""):
 
         cursor.execute(query, (start_time, end_time))
         slice = cursor.fetchall()
-        # print(slice[0][0])
-        # print(slice[-1][0])
-        start_id = slice[0][0]
-        end_id = slice[-1][0]
-
-        # print(len(slice))
-        
 
         if start_id == -1:
             start_id = 0
@@ -93,7 +101,7 @@ def generateDataTable(site_name: str, start_epoch, path = ""):
         else:
             start_id = end_id
             end_id = end_id + len(slice)
-        print("start, end", start_id, end_id)
+        print("start_id, end_id", start_id, end_id)
 
         for priority in priorities:
             total_flows = 0
@@ -106,19 +114,81 @@ def generateDataTable(site_name: str, start_epoch, path = ""):
             time_sum = 6
             count = 1
 
+            if priority == "Basic" and len(basicdata) != 0:
+                count = basicdata[-1][0]
+                priority = "Basic"
+                total_flows = basicdata[-1][2]
+                total_bytes = basicdata[-1][3]
+                avg_bitrate = basicdata[-1][4]
+                avg_packetrate = basicdata[-1][5]
+                peak_bitrate = basicdata[-1][6]
+                peak_packetrate = basicdata[-1][7]
+                total_packets = basicdata[-1][8]
+            if priority == "Basic +" and len(basicpdata) != 0:
+                count = basicpdata[-1][0]
+                priority = "Basic +"
+                total_flows = basicpdata[-1][2]
+                total_bytes = basicpdata[-1][3]
+                avg_bitrate = basicpdata[-1][4]
+                avg_packetrate = basicpdata[-1][5]
+                peak_bitrate = basicpdata[-1][6]
+                peak_packetrate = basicpdata[-1][7]
+                total_packets = basicpdata[-1][8]            
+            if priority == "Enhanced"and len(enhanceddata) != 0:
+                count = enhanceddata[-1][0]
+                priority = "Enhanced"
+                total_flows = enhanceddata[-1][2]
+                total_bytes = enhanceddata[-1][3]
+                avg_bitrate = enhanceddata[-1][4]
+                avg_packetrate = enhanceddata[-1][5]
+                peak_bitrate = enhanceddata[-1][6]
+                peak_packetrate = enhanceddata[-1][7]
+                total_packets = enhanceddata[-1][8]                   
+            if priority == "Enhanced +"and len(enhancedpdata) != 0:
+                count = enhancedpdata[-1][0]
+                priority = "Enhanced +"
+                total_flows = enhancedpdata[-1][2]
+                total_bytes = enhancedpdata[-1][3]
+                avg_bitrate = enhancedpdata[-1][4]
+                avg_packetrate = enhancedpdata[-1][5]
+                peak_bitrate = enhancedpdata[-1][6]
+                peak_packetrate = enhancedpdata[-1][7]
+                total_packets = enhancedpdata[-1][8]              
+            if priority == "Premium"and len(premiumdata) != 0:
+                count = enhancedpdata[-1][0]
+                priority = "Premium"
+                total_flows = premiumdata[-1][2]
+                total_bytes = premiumdata[-1][3]
+                avg_bitrate = premiumdata[-1][4]
+                avg_packetrate = premiumdata[-1][5]
+                peak_bitrate = premiumdata[-1][6]
+                peak_packetrate = premiumdata[-1][7]
+                total_packets = premiumdata[-1][8]               
+            if priority == "Premium +"and len(premiumpdata) != 0:
+                count = enhancedpdata[-1][0]
+                priority = "Premium +"
+                total_flows = premiumpdata[-1][2]
+                total_bytes = premiumpdata[-1][3]
+                avg_bitrate = premiumpdata[-1][4]
+                avg_packetrate = premiumpdata[-1][5]
+                peak_bitrate = premiumpdata[-1][6]
+                peak_packetrate = premiumpdata[-1][7]
+                total_packets = premiumpdata[-1][8]  
             cur_flows = (
-                    "select sum(num_flows), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
+                    "select sum(num_flows), flowset_id, priority from " + site_name_flowsets + " inner join " + site_name_flows + " on " + site_name_flowsets + ".id = " + site_name_flows  + ".flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                     )
             
             cursor.execute(cur_flows, (start_id, end_id, priority, start_time, end_time))
+            # print(start_id, end_id, priority, start_time, end_time)
+            # return
             res = cursor.fetchall()[0][0]
-            # print(res)
+            print("Cur flows: ", res)
 
             if res is not None:
                 total_flows += res
 
             cur_bytes = (
-                    "select sum(bytes), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
+                    "select sum(bytes), flowset_id, priority from " + site_name_flowsets + " inner join " + site_name_flows + " on " + site_name_flowsets + ".id = " + site_name_flows  + ".flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                     )
             
             cursor.execute(cur_bytes, (start_id, end_id, priority, start_time, end_time))
@@ -135,7 +205,7 @@ def generateDataTable(site_name: str, start_epoch, path = ""):
 
 
             cur_packets = (
-                    "select sum(packets), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
+                    "select sum(packets), flowset_id, priority from " + site_name_flowsets + " inner join " + site_name_flows + " on " + site_name_flowsets + ".id = " + site_name_flows  + ".flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                     )
             
             cursor.execute(cur_packets, (start_id, end_id, priority, start_time, end_time))
@@ -162,85 +232,96 @@ def generateDataTable(site_name: str, start_epoch, path = ""):
             time_sum += 6
             count += 1
     
-    # os.mkdir(path + "\\DataTableData")
+    os.mkdir(path + "\\DataTableData")
 
-    # bfn = path + "\\DataTableData\\" + site_name + "BasicDataTableData6SecondSlices.csv"
-    with open("DataTableData/Basic.csv", "w", newline='') as f:
+    bfn = path + "\\DataTableData\\" + site_name + "BasicDataTableData6SecondSlices.csv"
+    with open(bfn, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
         
         for i in range(len(basicdata)):
             # writer.writerow([i,basicdata[i][0],basicdata[i][1],basicdata[i][2], basicdata[i][3], basicdata[i][4], basicdata[i][5], basicdata[i][6], basicdata[i][7], basicdata[i][8]])
-            writer.writerow([i] + basicdata[i])
+            writer.writerow([i] + basicdata[i][1:])
     f.close()   
 
-    # bpfn = path + "\\DataTableData\\" + site_name + "Basic+DataTableData6SecondSlices.csv"
-    with open("DataTableData/Basic+.csv", "w", newline='') as f:
+    bpfn = path + "\\DataTableData\\" + site_name + "Basic+DataTableData6SecondSlices.csv"
+    with open(bpfn, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
         
         for i in range(len(basicdata)):
             # writer.writerow([i,basicdata[i][0],basicdata[i][1],basicdata[i][2], basicdata[i][3], basicdata[i][4], basicdata[i][5], basicdata[i][6], basicdata[i][7], basicdata[i][8]])
-            writer.writerow([i] + basicpdata[i])
-
-    f.close()   
-
-    # efn = path + "\\DataTableData\\" + site_name + "EnhancedDataTableData6SecondSlices.csv"
-    with open("DataTableData/Enhanced.csv", "w", newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
-        
-        for i in range(len(basicdata)):
-            # writer.writerow([i,basicdata[i][0],basicdata[i][1],basicdata[i][2], basicdata[i][3], basicdata[i][4], basicdata[i][5], basicdata[i][6], basicdata[i][7], basicdata[i][8]])
-            writer.writerow([i] + enhanceddata[i])
+            writer.writerow([i] + basicpdata[i][1:])
 
     f.close()   
 
-    # epfn = path + "\\DataTableData\\" + site_name + "Enhanced+DataTableData6SecondSlices.csv"
-    with open("DataTableData/Enhanced+.csv", "w", newline='') as f:
+    efn = path + "\\DataTableData\\" + site_name + "EnhancedDataTableData6SecondSlices.csv"
+    with open(efn, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
         
         for i in range(len(basicdata)):
             # writer.writerow([i,basicdata[i][0],basicdata[i][1],basicdata[i][2], basicdata[i][3], basicdata[i][4], basicdata[i][5], basicdata[i][6], basicdata[i][7], basicdata[i][8]])
-            writer.writerow([i] + enhancedpdata[i])
+            writer.writerow([i] + enhanceddata[i][1:])
+
+    f.close()   
+
+    epfn = path + "\\DataTableData\\" + site_name + "Enhanced+DataTableData6SecondSlices.csv"
+    with open(epfn, "w", newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
+        
+        for i in range(len(basicdata)):
+            # writer.writerow([i,basicdata[i][0],basicdata[i][1],basicdata[i][2], basicdata[i][3], basicdata[i][4], basicdata[i][5], basicdata[i][6], basicdata[i][7], basicdata[i][8]])
+            writer.writerow([i] + enhancedpdata[i][1:])
 
     f.close()  
 
-    # pfn = path + "\\DataTableData\\" + site_name + "PremiumDataTableData6SecondSlices.csv"
-    with open("DataTableData/Premium.csv", "w", newline='') as f:
+    pfn = path + "\\DataTableData\\" + site_name + "PremiumDataTableData6SecondSlices.csv"
+    with open(pfn, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
         
         for i in range(len(basicdata)):
             # writer.writerow([i,basicdata[i][0],basicdata[i][1],basicdata[i][2], basicdata[i][3], basicdata[i][4], basicdata[i][5], basicdata[i][6], basicdata[i][7], basicdata[i][8]])
-            writer.writerow([i] + premiumdata[i])
+            writer.writerow([i] + premiumdata[i][1:])
 
     f.close()   
 
-    # ppfn = path + "\\DataTableData\\" + site_name + "Premium+DataTableData6SecondSlices.csv"
-    with open("DataTableData/Premium+.csv", "w", newline='') as f:
+    ppfn = path + "\\DataTableData\\" + site_name + "Premium+DataTableData6SecondSlices.csv"
+    with open(ppfn, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
         
         for i in range(len(basicdata)):
             # writer.writerow([i,basicdata[i][0],basicdata[i][1],basicdata[i][2], basicdata[i][3], basicdata[i][4], basicdata[i][5], basicdata[i][6], basicdata[i][7], basicdata[i][8]])
-            writer.writerow([i] + premiumpdata[i])
+            writer.writerow([i] + premiumpdata[i][1:])
 
     f.close()  
 
-
-            
 
 def generateGraphData(site_name: str, start_epoch, path):
+    """
+    Generate the graph data necessary for updating the graph in "real time" 
     
+    params:
+        site_name : str
+            Which site to generate data from
+        start_epoch : int
+            The frame_epoch (unix time) of the date selected
+        path : str
+            The destination path to write to
+    """
+
     # Connect to the database
     cnx = mysql.connector.connect(host='35.9.22.102', user='root', password='VRRocks', database='gm')
     cursor = cnx.cursor()
 
+    # Get strings for inserting correct site into queries
     site_name_flowsets = site_name.lower() + "Flowsets"
     site_name_flows = site_name.lower() + "Flows"
 
+    # Calculate start of day, end of day, and the length of time the data for this site/date is from
     startofday = start_epoch
     endofday = str(int(start_epoch) + 86400)
 
@@ -260,6 +341,9 @@ def generateGraphData(site_name: str, start_epoch, path):
     min = cursor.fetchall()
     cnx.commit()    
 
+    if min[0][0] is None or mmax[0][0] is None:
+        print("Please select a valid date")
+        return
     min_seconds = math.floor(float(min[0][0]))
     max_seconds = math.ceil(float(mmax[0][0]))
 
@@ -274,8 +358,7 @@ def generateGraphData(site_name: str, start_epoch, path):
     time_slices.append(max_seconds)    
     print(time_slices)
 
-
-
+    # Variables setup
     pp = []
     p = []
     ep = []
@@ -342,10 +425,10 @@ def generateGraphData(site_name: str, start_epoch, path):
 
     start_id = -1
 
+    # Get all data in 6 second intervals
     for i in range(len(time_slices) - 1):
         start_time = time_slices[i]
         end_time = time_slices[i+1]        
-        # print(start_time, end_time)
 
         query = (
                 "select id from " + site_name_flowsets + " where frame_epoch >= %s and frame_epoch < %s"
@@ -353,7 +436,6 @@ def generateGraphData(site_name: str, start_epoch, path):
 
         cursor.execute(query, (start_time, end_time))
         slice = cursor.fetchall()
-        # print(len(slice))
 
         if start_id == -1:
             start_id = 0
@@ -386,16 +468,12 @@ def generateGraphData(site_name: str, start_epoch, path):
             res = 0
         pppr = float(res / (end_time - start_time))
 
-
-
-        # NEW STUFF
         cur_flows = (
                 "select sum(num_flows), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
         
         cursor.execute(cur_flows, (start_id, end_id, "Premium +", start_time, end_time))
         res = cursor.fetchall()[0][0]
-        # print(res)
 
         if res is not None:
             pptotal_flows += res
@@ -432,17 +510,7 @@ def generateGraphData(site_name: str, start_epoch, path):
 
         dtpp.append(["Premium +", pptotal_flows, pptotal_bytes, ppavg_bitrate, ppavg_packetrate, pppeak_bitrate, pppeak_packetrate, pptotal_packets])
 
-
-
-
-
-
-
-
-
         #######################
-
-
 
 
         ### PREMIUM DATA ###
@@ -467,15 +535,12 @@ def generateGraphData(site_name: str, start_epoch, path):
             res = 0
         ppr = float((res) / (end_time - start_time))
 
-
-        # NEW STUFF
         cur_flows = (
                 "select sum(num_flows), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
         
         cursor.execute(cur_flows, (start_id, end_id, "Premium", start_time, end_time))
         res = cursor.fetchall()[0][0]
-        # print(res)
 
         if res is not None:
             ptotal_flows += res
@@ -496,7 +561,6 @@ def generateGraphData(site_name: str, start_epoch, path):
         ppeak_bitrate = max(ppeak_bitrate, pavg_bitrate)
         ppeak_packetrate = max(ppeak_packetrate, pavg_packetrate)
 
-
         cur_packets = (
                 "select sum(packets), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
@@ -511,8 +575,6 @@ def generateGraphData(site_name: str, start_epoch, path):
         ppeak_bitrate = ppeak_bitrate / 1000000
 
         dtp.append(["Premium", ptotal_flows, ptotal_bytes, pavg_bitrate, pavg_packetrate, ppeak_bitrate, ppeak_packetrate, ptotal_packets])
-
-
 
         ######################
 
@@ -542,14 +604,12 @@ def generateGraphData(site_name: str, start_epoch, path):
             res = 0
         eppr = float((res) / (end_time - start_time))
 
-        # NEW STUFF
         cur_flows = (
                 "select sum(num_flows), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
         
         cursor.execute(cur_flows, (start_id, end_id, "Enhanced +", start_time, end_time))
         res = cursor.fetchall()[0][0]
-        # print(res)
 
         if res is not None:
             eptotal_flows += res
@@ -612,15 +672,12 @@ def generateGraphData(site_name: str, start_epoch, path):
             res = 0
         epr = float((res) / (end_time - start_time))
 
-
-        # NEW STUFF
         cur_flows = (
                 "select sum(num_flows), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
         
         cursor.execute(cur_flows, (start_id, end_id, "Enhanced", start_time, end_time))
         res = cursor.fetchall()[0][0]
-        # print(res)
 
         if res is not None:
             etotal_flows += res
@@ -641,7 +698,6 @@ def generateGraphData(site_name: str, start_epoch, path):
         epeak_bitrate = max(epeak_bitrate, eavg_bitrate)
         epeak_packetrate = max(epeak_packetrate, eavg_packetrate)
 
-
         cur_packets = (
                 "select sum(packets), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
@@ -656,7 +712,6 @@ def generateGraphData(site_name: str, start_epoch, path):
         epeak_bitrate = epeak_bitrate / 1000000
 
         dte.append(["Enhanced", etotal_flows, etotal_bytes, eavg_bitrate, eavg_packetrate, epeak_bitrate, epeak_packetrate, etotal_packets])
-
 
         ######################
 
@@ -684,15 +739,12 @@ def generateGraphData(site_name: str, start_epoch, path):
             res = 0
         bppr = float((res) / (end_time - start_time))
 
-
-        # NEW STUFF
         cur_flows = (
                 "select sum(num_flows), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
         
         cursor.execute(cur_flows, (start_id, end_id, "Basic +", start_time, end_time))
         res = cursor.fetchall()[0][0]
-        # print(res)
 
         if res is not None:
             bptotal_flows += res
@@ -713,7 +765,6 @@ def generateGraphData(site_name: str, start_epoch, path):
         bppeak_bitrate = max(bppeak_bitrate, bpavg_bitrate)
         bppeak_packetrate = max(bppeak_packetrate, bpavg_packetrate)
 
-
         cur_packets = (
                 "select sum(packets), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
@@ -728,8 +779,6 @@ def generateGraphData(site_name: str, start_epoch, path):
         bppeak_bitrate = bppeak_bitrate / 1000000
 
         dtbp.append(["Basic +", bptotal_flows, bptotal_bytes, bpavg_bitrate, bpavg_packetrate, bppeak_bitrate, bppeak_packetrate, bptotal_packets])
-
-
 
         ####################
 
@@ -756,15 +805,12 @@ def generateGraphData(site_name: str, start_epoch, path):
             res = 0
         bpr = float((res) / (end_time - start_time))    
 
-
-        # NEW STUFF
         cur_flows = (
                 "select sum(num_flows), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
         
         cursor.execute(cur_flows, (start_id, end_id, "Basic", start_time, end_time))
         res = cursor.fetchall()[0][0]
-        # print(res)
 
         if res is not None:
             btotal_flows += res
@@ -785,7 +831,6 @@ def generateGraphData(site_name: str, start_epoch, path):
         bpeak_bitrate = max(bpeak_bitrate, bavg_bitrate)
         bpeak_packetrate = max(bpeak_packetrate, bavg_packetrate)
 
-
         cur_packets = (
                 "select sum(packets), flowset_id, priority from springhillFlowsets inner join springhillFlows on springhillFlowsets.id = springhillFlows.flowset_id where flowset_id > %s and flowset_id <= %s and priority= %s and frame_epoch > %s and frame_epoch <= %s"
                 )
@@ -803,8 +848,7 @@ def generateGraphData(site_name: str, start_epoch, path):
 
         ####################  
 
-
-
+        # Add all info to the lists
         pp.append(["Premium +", start_time, end_time, ppbr, pppr])
         p.append(["Premium",start_time, end_time, pbr, ppr])
 
@@ -816,7 +860,7 @@ def generateGraphData(site_name: str, start_epoch, path):
 
         time_sum += 6
 
-
+    # Calculate remaining data and append all to lists for writing
     maxbrpp = -1
     maxprpp = -1
 
@@ -917,8 +961,10 @@ def generateGraphData(site_name: str, start_epoch, path):
 
 
     
+    # Create a directory where they specified
     os.mkdir(path + "\\GraphData")
 
+    # Write to a file for each priority, all the data generated
     bfn = path + "\\GraphData\\" + site_name + "BasicGraphData6SecondSlices.csv"
     with open(bfn, "w", newline='') as f:
         writer = csv.writer(f)
@@ -989,8 +1035,8 @@ def generateGraphData(site_name: str, start_epoch, path):
 
     tabledatafn = path + "\\GraphData\\" + site_name + "TableData.csv"
 
-    # averages
 
+    # Calculate averages
     ppavgbr = (sum(ppbrs)/len(ppbrs)) / 1000000
     pavgbr = (sum(pbrs)/len(pbrs)) / 1000000
 
@@ -1010,7 +1056,7 @@ def generateGraphData(site_name: str, start_epoch, path):
     bpavgpr = (sum(bpprs)/len(bpprs)) / 1000000
     bavgpr = (sum(bprs)/len(bprs)) / 1000000
 
-    # maxes/peaks
+    #Calculate peaks
     print("prem +")
     print(maxbrpp, maxprpp)
 
@@ -1065,9 +1111,6 @@ def generateGraphData(site_name: str, start_epoch, path):
     cursor.execute(query)
     premiumplustotalpackets = cursor.fetchall()[0][0]
 
-
-
-
     query = ("select sum(" + site_name_flows + ".bytes) from " + site_name_flowsets + " inner join " + site_name_flows + " on " + site_name_flowsets +".id=" + site_name_flows + ".flowset_id where " + site_name_flows + ".priority=\"Basic\" and " + site_name_flowsets + ".frame_epoch > " + min_seconds + " and " + site_name_flowsets + ".frame_epoch < " + max_seconds + " ")
 
     cursor.execute(query)
@@ -1090,21 +1133,17 @@ def generateGraphData(site_name: str, start_epoch, path):
 
     query = ("select sum(" + site_name_flows + ".bytes) from " + site_name_flowsets + " inner join " + site_name_flows + " on " + site_name_flowsets +".id=" + site_name_flows + ".flowset_id where " + site_name_flows + ".priority=\"Premium\" and " + site_name_flowsets + ".frame_epoch > " + min_seconds + " and " + site_name_flowsets + ".frame_epoch < " + max_seconds + " ")
 
-    # cursor.execute(query)
-    # if cursor.fetchall()[0][0] == None:
-    #     val = 0
-    # else:
-    #     val = cursor.fetchall()[0][0]
-    # premiumtotalbytes = float(int(val)/1000000)
+    cursor.execute(query)
+    if cursor.fetchall()[0][0] == None:
+        val = 0
+    else:
+        val = cursor.fetchall()[0][0]
+    premiumtotalbytes = float(int(val)/1000000)
 
     query = ("select sum(" + site_name_flows + ".bytes) from " + site_name_flowsets + " inner join " + site_name_flows + " on " + site_name_flowsets +".id=" + site_name_flows + ".flowset_id where " + site_name_flows + ".priority=\"Premium +\" and " + site_name_flowsets + ".frame_epoch > " + min_seconds + " and " + site_name_flowsets + ".frame_epoch < " + max_seconds + " ")
 
     cursor.execute(query)
     premiumplustotalbytes = float(int(cursor.fetchall()[0][0])/1000000) 
-
-
-
-
 
     query = ("select count(*) from " + site_name_flowsets + " inner join " + site_name_flows + " on " + site_name_flowsets +".id=" + site_name_flows + ".flowset_id where " + site_name_flows + ".priority=\"Basic\" and " + site_name_flowsets + ".frame_epoch > " + min_seconds + " and " + site_name_flowsets + ".frame_epoch < " + max_seconds + " ")
 
@@ -1136,9 +1175,6 @@ def generateGraphData(site_name: str, start_epoch, path):
     cursor.execute(query)
     premiumplustotalflows = cursor.fetchall()[0][0]
 
-
-
-
     with open(tabledatafn, "w", newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["row_name", "priority","total_flows","total_bytes","average_bitrate","average_packetrate","peak_bitrate","peak_packetrate","total_packets"])
@@ -1153,133 +1189,8 @@ def generateGraphData(site_name: str, start_epoch, path):
 
     f.close() 
 
-
-
-
-
-
-
-
-    # os.mkdir(path + "\\DataTableData")
-
-    # bfn = path + "\\DataTableData\\" + site_name + "BasicDataTableData6SecondSlices.csv"
-    with open("DataTableData/Basic.csv", "w", newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
-        
-        for i in range(len(dtb)):
-            writer.writerow([i] + dtb[i])
-    f.close()   
-
-    # bpfn = path + "\\DataTableData\\" + site_name + "Basic+DataTableData6SecondSlices.csv"
-    with open("DataTableData/Basic+.csv", "w", newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
-        
-        for i in range(len(dtbp)):
-            writer.writerow([i] + dtbp[i])
-
-    f.close()   
-
-    # efn = path + "\\DataTableData\\" + site_name + "EnhancedDataTableData6SecondSlices.csv"
-    with open("DataTableData/Enhanced.csv", "w", newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
-        
-        for i in range(len(dte)):
-            writer.writerow([i] + dte[i])
-
-    f.close()   
-
-    # epfn = path + "\\DataTableData\\" + site_name + "Enhanced+DataTableData6SecondSlices.csv"
-    with open("DataTableData/Enhanced+.csv", "w", newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
-        
-        for i in range(len(dtep)):
-            writer.writerow([i] + dtep[i])
-
-    f.close()  
-
-    # pfn = path + "\\DataTableData\\" + site_name + "PremiumDataTableData6SecondSlices.csv"
-    with open("DataTableData/Premium.csv", "w", newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
-        
-        for i in range(len(dtp)):
-            writer.writerow([i] + dtp[i])
-
-    f.close()   
-
-    # ppfn = path + "\\DataTableData\\" + site_name + "Premium+DataTableData6SecondSlices.csv"
-    with open("DataTableData/Premium+.csv", "w", newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(["row_name","priority", "total_flows", "total_bytes", "avg_bitrate(Mb/second)", "avg_packetrate(packets/second)", "peak_bitrate(Mb/second)", "peak_packetrate(packets/second)", "total_packets"])
-        
-        for i in range(len(dtpp)):
-            writer.writerow([i] + dtpp[i])
-
-    f.close()  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # with open("SpringhillGraphData3SecondSlicesBySlice.csv", "w", newline='') as f:
-    #     writer = csv.writer(f)
-    #     writer.writerow(["priority", "start_time", "end_time", "bitrate(bits/second)", "packetrate(packets/second)"])
-        
-    #     for i in range(len(pp)):
-    #         writer.writerow(pp[i])
-    #         writer.writerow(p[i])
-    #         writer.writerow(ep[i])
-    #         writer.writerow(e[i])
-    #         writer.writerow(bp[i])
-    #         writer.writerow(b[i])
-
-    # f.close()  
-
-
-    # cursor.execute(query)
-    # slice1 = cursor.fetchall()
-    # cnx.commit()   
-    # print(len(slice1))
-        # Get data between start and end
-        # Get bitrate, get packetrate, append to list for each priority
-
-
-
-    # getFullFlowSetData Example Call
-    # data = getFullFlowSetData("PCAP Data/springhill.json", "Application")
-    # for k,v in data.items():
-    #     print(k, ':', v)
-
-    # getUniqueIPs Example Call
-    # srcIPs, destIPs = getUniqueIPs("PCAP Data/initialPCAPdata.json", True)
-
-    # getFlowsets Example Call
-    # flowsetData, flowsData = getFlowsets("PCAP Data/springhill.json", 1)
-
-    # writeFlowsetsAndFlowsToCSV Example Call
-    # writeFlowsetsAndFlowsToCSV("PCAP Data/springhill.json", "CSV Data/springhillFlowsets.csv", "CSV Data/springhillFlows.csv", 1)
-    
-    # insertFlows Example Call
-    # insertFlows("CSV Data/springhillFlows.csv")
-
-    # insertFlowsets Example Call
-    # insertFlowsets("CSV Data/springhillFlowsets.csv")
-
     return
+
 
 def getUniqueIPs(JSONfilename: str, pathToNewFile: str):
     """
@@ -1339,11 +1250,10 @@ def getUniqueIPs(JSONfilename: str, pathToNewFile: str):
 
     return uniqueSourceIPs, uniqueDestinationIPs
 
+
 def main():
 
-    generateGraphData("Springhill", 1674018001, "C:\\Users\\nwang\\Desktop")
-    return
-
+    # Setup window, dropdown box, and options
     v = StringVar(master)
     introText = Label(master, text="Choose what you'd like to do from the dropdown menu below", font=("Helvetica bold", 12))
     introText.pack(ipady=10)
@@ -1358,30 +1268,38 @@ def main():
 
         # Graph data generation
         if choice == combobox['values'][0]:
-            # Generate csvs for graphing
             lab = Label(master, text="Make sure you're connected to the vpn before doing this\nWhich site do you want to get the data from?")
             lab.pack(ipady=5)
 
+            # Happens when a site and date are selected
             def graphWrapper():
 
+                # Get the storage location and calculate the frame_epcoh
                 messagebox.showinfo(message="Select the place you want the files to be stored")
                 destination = filedialog.askdirectory()
                 datetime1 = cal.get_date()
                 dt1 = datetime.datetime.combine(datetime1, datetime.datetime.strptime('00:00', '%H:%M').time())
                 date_epochtime = calendar.timegm(dt1.timetuple())
                 print("you selected " + str(date_epochtime))
-
+                
                 if destination:
                     destination_path = str(os.path.abspath(destination))        
-                    dst_entry = tk.Label(master, text="JSON File Path: " + destination_path)
+                    dst_entry = tk.Label(master, text="Destination Path: " + destination_path)
                     dst_entry.pack()  
 
                 if var.get() == "Springhill":
                     generateGraphData("Springhill", date_epochtime, destination_path)
+                    generateDataTable("Springhill", date_epochtime, destination_path)
                 if var.get() == "Manila":
                     generateGraphData("Manila", date_epochtime, destination_path)
+                    generateDataTable("Manila", date_epochtime, destination_path)
 
-   
+
+            lab2 = Label(master, text="Choose a date to get the graph data from\n(Currently only 1/18/23 for Springhill, and 2/2/23 for Manila )")
+            lab2.pack()
+            date = StringVar()
+            cal = DateEntry(master, width=16, variable=date, command=graphWrapper)
+            cal.pack()
 
             var = StringVar()
 
@@ -1389,13 +1307,7 @@ def main():
             manilaRadio = Radiobutton(master, text="Manila", variable = var, value = "Manila", command=graphWrapper)
             springhillRadio.pack()
             manilaRadio.pack()
-            lab2 = Label(master, text="Choose a date to get the graph data from\n(Currently only 1/18/23 for Springhill, and 2/2/23 for Manila )")
-            lab2.pack()
-            date = StringVar()
-
-            cal = DateEntry(master, width=16, variable=date, command=graphWrapper)
-            cal.pack()
-            pass
+            
 
         # Insert flows and flowsets
         if choice == combobox['values'][1]:
@@ -1465,7 +1377,6 @@ def main():
             start = Button(master, text="Go", command=getUniqueIPs(source_path, destination_path))
             start.pack()
                
-    
     combobox.bind('<<ComboboxSelected>>', comboboxCB)
 
     mainloop()
