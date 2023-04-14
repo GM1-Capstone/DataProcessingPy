@@ -1328,29 +1328,21 @@ def main():
 
                 if var.get() == "Springhill":
                     springhill.writeFlowsetsAndFlowsToCSV(source_path, siteId=1)
-                    springhill.insertFlowsets('flowsets.csv')
-                    springhill.insertFlows('flows.csv')
-                    os.remove("flows.csv")
-                    os.remove("flowsets.csv")
+                    # springhill.insertFlowsets('flowsets.csv')
+                    # springhill.insertFlows('flows.csv')
+                    # os.remove("flows.csv")
+                    # os.remove("flowsets.csv")
                 if var.get() == "Manila":
                     manila.writeFlowsetsAndFlowsToCSV(source_path, siteId=2)
                     # manila.insertFlows('flows.csv')
                     # manila.insertFlowsets('flowsets.csv')
                     # os.remove("flows.csv")
                     # os.remove("flowsets.csv")        
-                if var.get() == "unknown":
-                    # unknown.writeFlowsetsAndFlowsToCSV(source_path, siteId=-1)
-                    pass
-                    # manila.insertFlows('flows.csv')
-                    # manila.insertFlowsets('flowsets.csv')
-                    # os.remove("flows.csv")
-                    # os.remove("flowsets.csv")     
-
+  
             var = StringVar()
 
             springhillRadio = Radiobutton(master, text = "Springhill", variable = var, value = "Springhill", command=insertionWrapper)
             manilaRadio = Radiobutton(master, text="Manila", variable = var, value = "Manila", command=insertionWrapper)
-            unknownRadio = Radiobutton(master, text="Unknown", variable = var, value = "Unknown", command=insertionWrapper)
 
             springhillRadio.pack()
             manilaRadio.pack()
